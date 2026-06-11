@@ -41,18 +41,19 @@ export function useSpeechRecognition({ onResult, onError }: RecognitionOptions) 
 
     const recognition = new SpeechRecognitionAPI();
     recognition.lang = 'en-US';
-    recognition.interimResults = false;
     recognition.maxAlternatives = 3;
+    recognition.continuous = false;
+    recognition.interimResults = true;
 
     recognition.onstart = () => setIsListening(true);
     recognition.onend = () => setIsListening(false);
 
-    recognition.onresult = (event: SpeechRecognitionEvent) => {
+    recognition.onresult = (event: any) => {
       const result = event.results[event.results.length - 1][0];
 
-      const transcript = result.transcript.toLowerCase().trim();
+      if (result.confidence < 0.6) return;
 
-      onResult(transcript);
+      onResult(result.transcript.toLowerCase().trim());
     };
 
     recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
