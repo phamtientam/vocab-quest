@@ -15,7 +15,8 @@ declare global {
 
 export function useSpeechRecognition({ onResult, onError }: RecognitionOptions) {
   const [isListening, setIsListening] = useState(false);
-  const recognitionRef = useRef<InstanceType<typeof window.SpeechRecognition> | null>(null);
+  // const recognitionRef = useRef<InstanceType<typeof window.SpeechRecognition> | null>(null);
+  const recognitionRef = useRef<any>(null);
 
   const isSupported =
     typeof window !== 'undefined' &&
@@ -47,8 +48,11 @@ export function useSpeechRecognition({ onResult, onError }: RecognitionOptions) 
     recognition.onend = () => setIsListening(false);
 
     recognition.onresult = (event: SpeechRecognitionEvent) => {
-      const results = Array.from(event.results[0]).map((r) => r.transcript.toLowerCase().trim());
-      onResult(results[0]);
+      const result = event.results[event.results.length - 1][0];
+
+      const transcript = result.transcript.toLowerCase().trim();
+
+      onResult(transcript);
     };
 
     recognition.onerror = (event: SpeechRecognitionErrorEvent) => {

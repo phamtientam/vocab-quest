@@ -71,8 +71,13 @@ export function SpeakingGame() {
     setHeard(transcript);
     setAttempts(a => a + 1);
 
-    const match = transcript.toLowerCase().includes(currentWord.word.toLowerCase());
+    // const match = transcript.toLowerCase().includes(currentWord.word.toLowerCase());
+    const normalize = (s: string) =>
+      s.toLowerCase().replace(/[^a-z]/g, '');
 
+    const match =
+      normalize(transcript) === normalize(currentWord.word);
+    console.log("match", match)
     if (match) {
       play('correct');
       speak(currentWord.word);
@@ -114,8 +119,8 @@ export function SpeakingGame() {
 
   const handleMicPress = () => {
     if (isListening) return;
-    speak(currentWord.word);
-    setTimeout(() => startListening(), 700);
+    // speak(currentWord.word);
+    setTimeout(() => startListening(), 2000);
   };
 
   const nextWord = () => {
