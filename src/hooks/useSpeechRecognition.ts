@@ -15,7 +15,7 @@ declare global {
 
 export function useSpeechRecognition({ onResult, onError }: RecognitionOptions) {
   const [isListening, setIsListening] = useState(false);
-  const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const recognitionRef = useRef<InstanceType<typeof window.SpeechRecognition> | null>(null);
 
   const isSupported =
     typeof window !== 'undefined' &&
@@ -24,6 +24,14 @@ export function useSpeechRecognition({ onResult, onError }: RecognitionOptions) 
   const startListening = useCallback(() => {
     if (!isSupported) {
       onError?.('Speech recognition not supported in this browser.');
+      return;
+    }
+
+    const SpeechRecognitionCtor =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!SpeechRecognitionCtor) {
+      console.warn("SpeechRecognition not supported");
       return;
     }
 
