@@ -77,6 +77,7 @@ export function SpeakingGame() {
 
     const match =
       normalize(transcript) === normalize(currentWord.word);
+
     if (match) {
       play('correct');
       speak(currentWord.word);
@@ -117,8 +118,9 @@ export function SpeakingGame() {
   }, [isListening]);
 
   const handleMicPress = () => {
-      if (isListening) return;
-      startListening();
+    if (isListening) return;
+    speak(currentWord.word);
+    setTimeout(() => startListening(), 1000);
   };
 
   const nextWord = () => {
